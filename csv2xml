@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+# csv2xml is (C) 2010 by Jan-Piet Mens
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+
+use strict;
+
+header();
+
+while (<>) {
+	s/\s+$//g;
+	next if (/^#/ || /^$/);
+
+	my ($name, $home, $work, $mobile, $quick, $main) = split(/;/, $_, 6);
+
+	my $tels = '';
+
+	$tels .= addphone('home', $home, $quick, $main) if ($home);
+	$tels .= addphone('work', $work, $quick, $main) if ($work);
+	$tels .= addphone('mobile', $mobile, $quick, $main) if ($mobile);
+
+
+	print <<ENDCONTACT;
+		<contact>
+		  <person>
+		      <realName>$name</realName>
+		  </person>
+		  <telephony>
+		      $tels
+		  </telephony>
+		</contact>
+ENDCONTACT
+
+}
+
+footer();
+
+sub addphone {
+	my ($type, $number, $quickdial, $main) = @_;
+
+	my $s = "<number ";
+	$s .= "prio='1' " if ($type eq $main);
+	$s .= "type='$type' ";
+	$s .= "quickdial='$quickdial'" if ($quickdial && $type eq $main);
+	$s .= ">";
+	$s .= $number . "</number>\n";
+
+	return $s;
+}
+
+sub header {
+	($_ = <<'END') =~ s/^\s+//gm;
+		<?xml version="1.0" encoding="iso-8859-1"?>
+		<phonebooks>
+		<phonebook>
+END
+	print;
+}
+
+sub footer {
+	($_ = <<'END') =~ s/^\s+//gm;
+		</phonebook>
+		</phonebooks>
+END
+	print;
+}
