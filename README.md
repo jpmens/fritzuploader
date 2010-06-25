@@ -29,3 +29,9 @@ To upload the `phonelist.xml`, run
 where _password_ is the password you use to log in to your Fritz!Box Web interface. (Note this password will be visible by tools such as `ps` and it will be in your shell history. If you're not alone on your machine, fix it by hardcoding it into the program.)
 
 Beware: the phone book is written into flash memory on the Fritz!Box -- don't run this program too frequently.
+
+# Bugs
+
+Yeah, sure. 
+
+If the upload fails, e.g. because the XML contains rubbish, we don't get an HTTP error code or such; instead, the Fritzbox returns an HTML page from which you'll have to determine what went wrong.
