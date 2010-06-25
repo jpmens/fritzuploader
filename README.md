@@ -17,13 +17,14 @@ It begins with a simple CSV file which can easily be generated from, say, LDAP, 
 
 Lines beginning with a hash (`#`) are ignored, as are blank lines. Use the `csv2xml` script included herein to translate that to the XML required by the Fritz!Box.
 
-	./csv2xml < phonelist.csv > phonelist.xml
+	$ ./csv2xml < phonebook.csv > phonebook.xml
 
 Before uploading your `phonelist.xml` to the Fritz!Box, you'll want to backup the current telephone book; do so within the Web interface of the Fritz!Box.
 
 To upload the `phonelist.xml`, run
 
-	./fritzuploader password
+	$ ./fritzuploader password
+	Success: phonebook uploaded
 
 where _password_ is the password you use to log in to your Fritz!Box Web interface. (Note this password will be visible by tools such as `ps` and it will be in your shell history. If you're not alone on your machine, fix it by hardcoding it into the program.)
 
