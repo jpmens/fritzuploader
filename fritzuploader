@@ -22,7 +22,7 @@ use XML::Simple;
 use Digest::MD5 qw(md5 md5_hex);
 use Encode;
 
-my $fritz = '192.168.1.1';	# fritz.box
+my $fritz = 'fritz.box';	# or IP address '192.168.1.1'
 my $password = $ARGV[0] or die "Usage: $0 fritzbox-password\n";
 
 my $webcmurl = "http://$fritz/cgi-bin/webcm";
