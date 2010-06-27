@@ -22,6 +22,10 @@ while (<>) {
 
 	my $tels = '';
 
+	$name =~ s/&/&amp;/g;
+	$name =~ s/</&lt;/g;
+	$name =~ s/>/&gt;/g;
+
 	$tels .= addphone('home', $home, $quick, $main) if ($home);
 	$tels .= addphone('work', $work, $quick, $main) if ($work);
 	$tels .= addphone('mobile', $mobile, $quick, $main) if ($mobile);
