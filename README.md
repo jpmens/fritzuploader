@@ -3,6 +3,7 @@
 A command-line uploader for the telephone directory (phone book) of a Fritz!Box. This software has been tested on a
 
 * FRITZ!Box Fon WLAN 7270
+* FRITZ!Box Fon WLAN 7390
 
 This program can do all sorts of bad things for you, so be warned.
 
