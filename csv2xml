@@ -28,14 +28,17 @@ while (<>) {
 
 
 	print <<ENDCONTACT;
-		<contact>
-		  <person>
-		      <realName>$name</realName>
-		  </person>
-		  <telephony>
-		      $tels
-		  </telephony>
-		</contact>
+    <contact>
+      <category />
+      <person>
+        <realName>$name</realName>
+      </person>
+      <telephony>
+        $tels
+      </telephony>
+      <services/>
+      <setup/>
+    </contact>
 ENDCONTACT
 
 }
