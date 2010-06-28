@@ -11,70 +11,65 @@
 # License.
 
 use strict;
+use XML::Writer;
+use IO::File;
+use Encode;
 
-header();
+my $output = new IO::File("> phonebook.xml") or die "Can't creat output: $!";
+my $xml = new XML::Writer(OUTPUT => $output, NEWLINES => 0);
+
+$xml->xmlDecl( "iso-8859-1" );
+$xml->startTag('phonebooks');
+$xml->startTag('phonebook');
 
 while (<>) {
 	s/\s+$//g;
 	next if (/^#/ || /^$/);
 
+	Encode::from_to($_, 'utf8', 'iso-8859-1');
 	my ($name, $home, $work, $mobile, $quick, $main) = split(/;/, $_, 6);
 
 	my $tels = '';
 
-	$name =~ s/&/&amp;/g;
-	$name =~ s/</&lt;/g;
-	$name =~ s/>/&gt;/g;
+	$xml->startTag('contact');
 
-	$tels .= addphone('home', $home, $quick, $main) if ($home);
-	$tels .= addphone('work', $work, $quick, $main) if ($work);
-	$tels .= addphone('mobile', $mobile, $quick, $main) if ($mobile);
+	  $xml->startTag('person');
+	    $xml->dataElement('realName', $name);
+	  $xml->endTag('person');
 
+	$xml->startTag('category');
+	$xml->endTag('category');
 
-	print <<ENDCONTACT;
-    <contact>
-      <category />
-      <person>
-        <realName>$name</realName>
-      </person>
-      <telephony>
-        $tels
-      </telephony>
-      <services/>
-      <setup/>
-    </contact>
-ENDCONTACT
+	$xml->startTag('services');
+	$xml->endTag('services');
+	$xml->startTag('setup');
+	$xml->endTag('setup');
 
+	$xml->startTag('telephony');
+
+		addphone('home', $home, $quick, $main) if ($home);
+		addphone('work', $work, $quick, $main) if ($work);
+		addphone('mobile', $mobile, $quick, $main) if ($mobile);
+
+	$xml->endTag('telephony');
+
+	$xml->endTag('contact');
 }
 
-footer();
+$xml->endTag('phonebook');
+$xml->endTag('phonebooks');
+$xml->end();
+$output->close();
 
 sub addphone {
 	my ($type, $number, $quickdial, $main) = @_;
 
-	my $s = "<number ";
-	$s .= "prio='1' " if ($type eq $main);
-	$s .= "type='$type' ";
-	$s .= "quickdial='$quickdial'" if ($quickdial && $type eq $main);
-	$s .= ">";
-	$s .= $number . "</number>\n";
+	my $prio = ($type eq $main) ? '1' : '';
 
-	return $s;
-}
-
-sub header {
-	($_ = <<'END') =~ s/^\s+//gm;
-		<?xml version="1.0" encoding="iso-8859-1"?>
-		<phonebooks>
-		<phonebook>
-END
-	print;
-}
-
-sub footer {
-	($_ = <<'END') =~ s/^\s+//gm;
-		</phonebook>
-		</phonebooks>
-END
-	print;
+	$quickdial = ($quickdial && $type eq $main) ? $quickdial : '';
+	
+	$xml->dataElement('number', $number,
+		'type' => $type,
+		'prio' => $prio,
+		'quickdial' => $quickdial);
 }
